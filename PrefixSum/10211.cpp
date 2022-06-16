@@ -1,3 +1,4 @@
+/*
 //
 // Created by 이경민 on 2022/06/16.
 //
@@ -33,5 +34,42 @@ int main() {
         cout<<ans<<"\n";
         for(int i=0; i<n; i++) v[i].clear();
         memset(arr,0,sizeof(int));
+    }
+} */
+
+//----개선----
+
+//
+// Created by 이경민 on 2022/06/16.
+//
+#include<iostream>
+#include<vector>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+
+int arr[1001];
+int t, n, ans;
+
+int main() {
+    cin.tie(NULL);
+    cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    cin >> t;
+    while (t--) {
+        cin >> n;
+        arr[0]=0;
+        for(int i=1; i<=n; i++){
+            cin>>arr[i];
+            arr[i]+=arr[i-1];
+        }
+        ans=arr[1];
+        for(int i=1; i<=n; i++){
+            for(int j=0; j<i; j++){
+                ans = max(ans,arr[i]-arr[j]);
+            }
+        }
+        cout<<ans<<"\n";
     }
 }

@@ -7,21 +7,21 @@ using namespace std;
 
 int n;
 bool map[8];
+vector<int> v;
 
-void permutation(vector<int> v) {
+void permutation() {
     if(v.size()==n) {
         for(auto i : v) cout<<i<<" ";
         cout<<"\n";
     }
 
     for(int i=0; i<n; i++) {
-        if(!map[i]) {
-            map[i]=true;
-            v.push_back(i+1);
-            permutation(v);
-            v.pop_back();
-            map[i]=false;
-        }
+        if(map[i]) continue;
+        map[i]=true;
+        v.push_back(i+1);
+        permutation();
+        v.pop_back();
+        map[i]=false;
     }
 }
 
@@ -31,12 +31,5 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin>>n;
-    vector<int> k;
-    for(int i=0; i<n; i++) {
-        map[i]=true;
-        k.push_back(i+1);
-        permutation(k);
-        k.pop_back();
-        map[i]=false;
-    }
+    permutation();
 }

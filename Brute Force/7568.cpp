@@ -1,42 +1,27 @@
 //
-//  7568.cpp
-//  BOJ
+// Created by 이경민 on 2022/08/08.
 //
-//  Created by 이경민 on 2022/03/30.
-//
-
 #include<iostream>
-#include<string>
-#include<cmath>
-#include<algorithm>
-#include<queue>
-#include<vector>
-#include<cstdlib>
-#include<functional>
-#include<set>
-#include<stack>
-#include<cstring>
 using namespace std;
 
-pair<int,int> info[50];
 int n;
+int weight[50];
+int height[50];
 
-int main(){
+bool comp(int wA,int wB, int hA, int hB) { return wA<wB && hA<hB; }
+
+int main() {
     cin.tie(NULL);
+    cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-    
+
     cin>>n;
-    for(int i=0; i<n; i++){
-        cin>>info[i].first>>info[i].second;
-    }
-    
-    for(int i=0; i<n; i++){
-        int rank=1;
-        for(int k=0; k<n; k++){
-            if(info[i].first<info[k].first && info[i].second<info[k].second)
-                ++rank;
+    for(int i=0; i<n; i++) cin>>weight[i]>>height[i];
+    for(int i=0; i<n; i++) {
+        int rank = 1;
+        for(int k=0; k<n; k++) {
+            if(comp(weight[i],weight[k],height[i],height[k])) ++rank;
         }
-        cout<<rank<<" ";
+        cout<<rank<< " ";
     }
 }
-

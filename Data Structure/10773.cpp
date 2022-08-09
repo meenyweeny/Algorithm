@@ -1,12 +1,12 @@
 //
-// Created by 이경민 on 2022-06-14.
+// Created by 이경민 on 2022/08/10.
 //
 #include<iostream>
-#include<vector>
+#include<stack>
 using namespace std;
 
-int k,x,sum;
-vector<int> v;
+int k,sum,x;
+stack<int> st;
 
 int main() {
     cin.tie(NULL);
@@ -16,11 +16,13 @@ int main() {
     cin>>k;
     while(k--){
         cin>>x;
-        if(x==0) v.pop_back();
-        else v.push_back(x);
-    }
-    for(auto i:v){
-        sum+=i;
+        if(x==0) {
+            sum-=st.top();
+            st.pop();
+            continue;
+        }
+        sum+=x;
+        st.push(x);
     }
     cout<<sum;
 }

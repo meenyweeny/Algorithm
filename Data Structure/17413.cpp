@@ -1,13 +1,20 @@
 //
-// Created by 이경민 on 2022/06/16.
+// Created by 이경민 on 2022/08/17.
 //
 #include<iostream>
-#include<deque>
+#include<stack>
 using namespace std;
 
 string cmd;
-bool flag = false;
-deque<char> dq;
+stack<char> st;
+char ch;
+
+void print() {
+    while(!st.empty()) {
+        cout<<st.top();
+        st.pop();
+    }
+}
 
 int main() {
     cin.tie(NULL);
@@ -15,27 +22,24 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     getline(cin,cmd);
-    for(auto i:cmd) {
-        if (i == ' ') {
-            if (flag) dq.push_back(i);
-            else {
-                for(auto k:dq) cout<<k;
-                dq.clear();
-                cout<<" ";
+    int length = cmd.length();
+    for(int i=0; i<length; i++) {
+        ch = cmd[i];
+        if(cmd[i]=='<') {
+            print();
+            while(1) {
+                cout<<cmd[i];
+                if(cmd[i]=='>') { break; }
+                ++i;
             }
-            continue;
-        } else if (i == '<') {
-            flag = true;
-        } else if (i == '>') {
-            dq.push_back(i);
-            for(auto k:dq) cout<<k;
-            dq.clear();
-            flag = false;
-            continue;
         }
-        if (flag) dq.push_back(i);
-        else dq.push_front(i);
+        else if(ch==' ') {
+            print();
+            cout<<" ";
+        }
+        else {
+            st.push(ch);
+        }
     }
-    for(auto i:dq) cout<<i;
-    dq.clear();
+    print();
 }

@@ -1,34 +1,28 @@
 //
-// Created by 이경민 on 2022-06-14.
+// Created by 이경민 on 2022/08/17.
 //
 #include<iostream>
-#include<string>
-#include<stack>
 using namespace std;
 
-int t;
+int n,sz;
 string cmd;
-
-bool isVPS() {
-    stack<char> st;
-    for(auto i:cmd){
-        if (i=='(') st.push(i);
-        else {
-            if (!st.empty()) st.pop();
-            else return false;
-        }
-    }
-    return st.empty();
-}
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin>>t;
-    while(t--){
+    cin>>n;
+    while(n--){
         cin>>cmd;
-        isVPS() ? cout << "YES\n" : cout << "NO\n";
+        for(auto i:cmd){
+            if(i=='(') ++sz;
+            else {
+                --sz;
+                if(sz==-1) break;
+            }
+        }
+        sz == 0 ? cout<<"YES\n" : cout<<"NO\n";
+        sz=0;
     }
 }

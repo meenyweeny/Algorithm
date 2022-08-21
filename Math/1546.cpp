@@ -1,13 +1,12 @@
 //
-// Created by 이경민 on 2022-06-08.
+// Created by 이경민 on 2022/08/22.
 //
 #include<iostream>
-#include<vector>
 #include<algorithm>
 using namespace std;
 
-int n,x,sum;
-vector<int> v;
+int n,sum,x;
+float rat = 101;
 
 int main() {
     cin.tie(NULL);
@@ -15,13 +14,10 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin>>n;
-    while(n--){
+    for(int i=0; i<n; i++) {
         cin>>x;
         sum+=x;
-        v.push_back(x);
+        if(float(100/((float)x)) < rat) rat = float(100/((float)x));
     }
-
-    sort(v.begin(),v.end());
-    reverse(v.begin(),v.end());
-    cout<<(double)((((double)(sum) * ((((double)100/(double)v[0])))/(double)(v.size()))));
+    cout<< (float)((float)sum / (float)n)*rat;
 }

@@ -1,72 +1,50 @@
 //
-//  1966.cpp
-//  BOJ
+// Created by 이경민 on 2022/08/22.
 //
-//  Created by 이경민 on 2022/03/30.
-//
-
 #include<iostream>
-#include<string>
-#include<cmath>
-#include<algorithm>
 #include<queue>
-#include<vector>
-#include<cstdlib>
-#include<functional>
+#include<algorithm>
 using namespace std;
 
-int t;
-int m,n,ans;
+int t,n,m,x,answer;
+priority_queue<int> pq;
+queue<pair<int,int>> q;
 
-int main(){
-    cin.tie(NULL);
-    ios_base::sync_with_stdio(false);
-    
-    cin>>t;
-    
-    while(t--){
-        
-        cin>>n>>m;
-        
-        ans=0;
-        
-        queue<pair<int,int>> q; //priority, turn
-        priority_queue<int> pq;
-        
-        for(int i=0; i<n; i++){
-            int tmp;
-            cin>>tmp;
-            q.push(make_pair(tmp,i));
-            pq.push(tmp);
-        }
-        
-        
-        while(!q.empty()){
-            int f=q.front().first;
-            if(f!=pq.top()){
-                int sf=q.front().first;
-                int ss=q.front().second;
-                q.pop();
-                q.push(make_pair(sf,ss));
-                continue;
-            }
-            else{
-                int s=q.front().second;
-                if(s==m){
-                    cout<<++ans<<"\n";
-                    break;
-                }
-                else{
-                    pq.pop();
-                    q.pop();
-                    ++ans;
-                    continue;
-                }
-            }
-
-
-        }
-    }
+void clear() {
+    while(!q.empty()) q.pop();
+    while(!pq.empty()) pq.pop();
+    answer = 0;
 }
 
+int main() {
+    cin.tie(NULL);
+    cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
+    cin>>t;
+
+    while(t--) {
+        cin>>n>>m;
+        for(int i=0; i<n; i++) {
+            cin>>x;
+            pq.push(x);
+            q.push({i,x});
+        }
+        while(!q.empty()) {
+            if (q.front().second == pq.top()) {
+                ++answer;
+                if (q.front().first == m) {
+                    cout<<answer<<"\n";
+                    break;
+                }
+                pq.pop();
+                q.pop();
+            }
+            else {
+                q.push(q.front());
+                q.pop();
+            }
+        }
+        clear();
+    }
+}

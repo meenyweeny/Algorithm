@@ -1,55 +1,46 @@
 //
-//  2346.cpp
-//  BOJ
+// Created by 이경민 on 2022/08/30.
 //
-//  Created by 이경민 on 2022/02/07.
-//
-
 #include<iostream>
 #include<deque>
 using namespace std;
 
-int n,k;
-deque<pair<int,int>> a;
+int n,x,nxt;
+deque<pair<int,int>> dq;
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-    
+
     cin>>n;
-    
-    for(int i=1; i<=n; i++){
-        cin>>k;
-        a.push_back({i,k});
+    for(int i=1; i<=n; i++) {
+        cin>>x;
+        dq.push_back({i,x});
     }
-    
-    k=a.front().second;
-    cout<<a.front().first<<" ";
-    a.pop_front();
-    
-    while(!a.empty()){
-        pair<int,int> p;
-        if(k>0){
-            while(k--){
-                p=a.front();
-                a.pop_front();
-                a.push_back(p);
+    nxt = dq.front().second;
+    cout<<dq.front().first<<" ";
+    dq.pop_front();
+
+    while(!dq.empty()){
+        if(nxt < 0) {
+            nxt *= -1;
+            for(int i=1; i < nxt; i++){
+                dq.push_front(dq.back());
+                dq.pop_back();
             }
-            k=a.back().second;
-            cout<<a.back().first<<" ";
-            a.pop_back();
+            cout<<dq.back().first<<" ";
+            nxt = dq.back().second;
+            dq.pop_back();
         }
-        else{
-            k*=-1;
-            while(k--){
-                p=a.back();
-                a.pop_back();
-                a.push_front(p);
+        else {
+            for (int i = 1; i < nxt; i++) {
+                dq.push_back(dq.front());
+                dq.pop_front();
             }
-            k=a.front().second;
-            cout<<a.front().first<<" ";
-            a.pop_front();
+            cout<<dq.front().first<<" ";
+            nxt = dq.front().second;
+            dq.pop_front();
         }
     }
 }

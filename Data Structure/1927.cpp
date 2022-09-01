@@ -1,5 +1,5 @@
 //
-// Created by 이경민 on 2022-06-15.
+// Created by 이경민 on 2022/09/01.
 //
 #include<iostream>
 #include<queue>
@@ -16,15 +16,14 @@ int main() {
     cin>>n;
     while(n--){
         cin>>x;
-        if(x==0) {
-            if (pq.empty()) cout<<"0\n";
-            else {
-                cout<<pq.top()<<"\n";
-                pq.pop();
+        if(x==0){
+            if(pq.empty()) {
+                cout<<"0\n";
+                continue;
             }
+            cout<<pq.top()<<"\n";
+            pq.pop();
         }
-        else {
-            pq.push(x);
-        }
+        else pq.push(x);
     }
 }

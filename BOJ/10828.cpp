@@ -1,34 +1,47 @@
 //
-// Created by 이경민 on 2022/08/17.
+// Created by 이경민 on 2023/01/09.
 //
 #include<iostream>
-#include<vector>
 using namespace std;
 
-int n,x;
-string cmd;
-
 class Stack {
-private:
-    vector<int> arr;
 public:
-    bool empty() { return arr.empty(); }
+    int arr[10001];
+    int top_index;
+
+    Stack() {
+        top_index = 0;
+    }
+
     void push(int x) {
-        arr.push_back(x);
+        arr[top_index] = x;
+        ++top_index;
     }
-    int pop() {
-        if(empty()) return -1;
-        int ret = arr.back();
-        arr.pop_back();
-        return ret;
+
+    bool is_empty() {
+        return top_index == 0;
     }
-    int size() { return arr.size(); }
+
     int top() {
-        if(empty()) return -1;
-        int ret = arr.back();
-        return ret;
+        return is_empty() ? -1 : arr[top_index-1];
+    }
+
+    int size() {
+        return top_index;
+    }
+
+    int pop() {
+        if(is_empty()) {
+            return -1;
+        } else {
+            --top_index;
+            return arr[top_index];
+        }
     }
 };
+
+int n,k;
+string cmd;
 
 int main() {
     cin.tie(NULL);
@@ -37,17 +50,19 @@ int main() {
 
     cin>>n;
     Stack st;
-    while(n--){
+    while(n--) {
         cin>>cmd;
-        if(cmd=="push"){
-            cin>>x;
-            st.push(x);
-            continue;
+        if(cmd=="push") {
+            cin>>k;
+            st.push(k);
+        } else if(cmd=="top") {
+            cout<<st.top()<<"\n";
+        } else if(cmd=="size") {
+            cout<<st.size()<<"\n";
+        } else if(cmd=="pop") {
+            cout<<st.pop()<<"\n";
+        } else if(cmd=="empty") {
+            cout<<st.is_empty()<<"\n";
         }
-        else if(cmd=="pop"){ cout<<st.pop(); }
-        else if(cmd=="size"){ cout<<st.size();}
-        else if(cmd=="empty"){ cout<<st.empty(); }
-        else if(cmd=="top"){ cout<<st.top(); }
-        cout<<"\n";
     }
 }

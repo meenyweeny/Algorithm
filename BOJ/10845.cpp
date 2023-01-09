@@ -1,51 +1,75 @@
 //
-// Created by 이경민 on 2022-06-09.
+// Created by 이경민 on 2023/01/09.
 //
 #include<iostream>
-#include<deque>
-#include<string>
 using namespace std;
 
-deque<int> dq;
-int n,x;
+class Queue {
+public:
+    int arr[10001];
+    int front_index;
+    int back_index;
+
+    Queue() {
+        front_index = back_index = 0;
+    }
+
+    void push(int x) {
+        arr[back_index] = x;
+        ++back_index;
+    }
+
+    bool is_empty() {
+        return front_index == back_index;
+    }
+
+    int pop() {
+        if(is_empty()) {
+            return -1;
+        } else {
+            ++front_index;
+            return arr[front_index-1];
+        }
+    }
+
+    int size() {
+        return back_index-front_index;
+    }
+
+    int front() {
+        return is_empty() ? -1 : arr[front_index];
+    }
+
+    int back() {
+        return is_empty() ? -1 : arr[back_index-1];
+    }
+};
+
+int n,k;
 string cmd;
 
-int main(){
+int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
     cin>>n;
-    while(n--){
+    Queue q;
+    while(n--) {
         cin>>cmd;
-        if(cmd=="push"){
-            cin>>x;
-            dq.push_back(x);
-        }
-        else if(cmd=="pop") {
-            if(dq.empty()) cout<<"-1\n";
-            else {
-                cout<<dq.front()<<"\n";
-                dq.pop_front();
-            }
-        }
-        else if(cmd=="size"){
-            cout<<dq.size()<<"\n";
-        }
-        else if(cmd=="empty"){
-            cout<<dq.empty()<<"\n";
-        }
-        else if(cmd=="front"){
-            if(dq.empty()) cout<<"-1\n";
-            else {
-                cout<<dq.front()<<"\n";
-            }
-        }
-        else if(cmd=="back"){
-            if(dq.empty()) cout<<"-1\n";
-            else {
-                cout<<dq.back()<<"\n";
-            }
+        if(cmd=="push") {
+            cin>>k;
+            q.push(k);
+        } else if(cmd=="front") {
+            cout<<q.front()<<"\n";
+        } else if(cmd=="pop") {
+            cout<<q.pop()<<"\n";
+        } else if(cmd=="back") {
+            cout<<q.back()<<"\n";
+        } else if(cmd=="size") {
+            cout<<q.size()<<"\n";
+        } else if(cmd=="empty") {
+            cout<<q.is_empty()<<"\n";
         }
     }
 }

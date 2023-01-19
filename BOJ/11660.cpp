@@ -1,32 +1,47 @@
 //
-// Created by 이경민 on 2022/06/16.
+// Created by 이경민 on 2023/01/19.
 //
 #include<iostream>
-#include<algorithm>
 using namespace std;
 
-int hor[1025][1025];
-int ver[1025][1025];
+int n,m;
+int map[1025][1025];
 
-int n,m,x,xx,y,yy;
+void input() {
+    cin>>n>>m;
+    for(int i=1; i<=n; i++) {
+        for(int j=1; j<=n; j++) {
+            cin>>map[i][j];
+        }
+    }
+}
+
+void solution() {
+    int x,xx,y,yy;
+
+    for(int i=1; i<=n; i++) {
+        for(int j=2; j<=n; j++) {
+            map[i][j] += map[i][j-1];
+        }
+    }
+
+    for(int i=2; i<=n; i++) {
+        for(int j=1; j<=n; j++) {
+            map[i][j] += map[i-1][j];
+        }
+    }
+
+    while(m--) {
+        cin>>x>>y>>xx>>yy;
+        cout<<map[xx][yy] - map[x-1][yy] - map[xx][y-1] + map[x-1][y-1]<<'\n';
+    }
+}
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin>>n>>m;
-    for(int i=1; i<=n; i++){
-        for(int k=1; k<=n; k++){
-            cin>>hor[i][k];
-            hor[i][k]+=hor[i][k-1];
-            ver[i][k] = hor[i][k] + ver[i-1][k];
-        }
-    }
-    while(m--){
-        cin>>x>>y>>xx>>yy;
-        if(x>xx) swap(x,xx);
-        if(y>yy) swap(y,yy);
-        cout<<ver[xx][yy]-ver[x-1][yy]-ver[xx][y-1]+ver[x-1][y-1]<<"\n";
-    }
+    input();
+    solution();
 }

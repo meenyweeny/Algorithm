@@ -1,62 +1,85 @@
-//
-// Created by 이경민 on 2022/12/20.
-//
 #include<iostream>
 #include<vector>
-#include<algorithm>
-#include<cmath>
-#include<climits>
 using namespace std;
 
 int n,m;
-int answer = INT_MAX;
-int delete_count, stores;
-int map[51][51];
-bool visitarray[13];
-vector<pair<int,int>> store;
-vector<pair<int,int>> home;
-int dist[13][51][51];
+int deletecount;
+int answer = 1e9;
 
-int calc_distance(pair<int,int> a, pair<int,int> b) {
-    return abs(a.first-b.first) + abs(a.second-b.second);
+struct Point {
+    int x,y;
+};
+
+vector<Point> store;
+vector<Point> home;
+
+int dist[13][51][51];
+bool visited[13];
+
+int get_dist(Point a, Point b) {
+    return abs(a.x-b.x) + abs(a.y-b.y);
 }
 
-void run(int index, int count, bool visited[]) {
-    if(count>stores) {
+void input() {
+    cin>>n>>m;
+    int k;
+    for(int i=0; i<n; i++) {
+        for(int j=0; j<n; j++) {
+            cin>>k;
+            if(k==1) {
+                home.push_back({i,j});
+            } else if(k==2) {
+                store.push_back({i,j});
+            }
+        }
+    }
+}
+
+void run(int start, int count, bool visit[]) {
+    if(count>=store.size()) {
         return;
     }
 
-    if(count>delete_count) {
-        int sum = 0;
-
-        for(int i=1; i<=n; i++) {
-            for(int j=1; j<=n; j++) {
-                if(map[i][j]!=1) {
+    if(count>=deletecount) {
+        int mindist;
+        int mini = 0;
+        for(int i=0; i<home.size(); i++) {
+            mindist = 1e9;
+            for(int j=0; j<store.size(); j++) {
+                if(visit[j]) {
                     continue;
                 }
-
-                int mini = INT_MAX;
-                for(int k=0; k<stores; k++) {
-                    if(visited[k]) {
-                        continue;
-                    }
-                    mini = min(mini,dist[k][i][j]);
-                }
-
-                sum += mini;
+                mindist = min(mindist,dist[j][home[i].x][home[i].y]);
             }
+            mini += mindist;
         }
-        answer = min(answer,sum);
+        answer = min(answer, mini);
     }
 
-    for(int i=index; i<stores; i++) {
-        if(visited[i]) {
+    for(int i=start; i<store.size(); i++) {
+        if(visit[i]) {
             continue;
         }
-        visited[i] = true;
-        run(i,count+1, visited);
-        visited[i] = false;
+        visit[i] = true;
+        run(i,count+1,visit);
+        visit[i] = false;
     }
+}
+
+void solution() {
+    deletecount = store.size() - m;
+    for(int i=0; i<home.size(); i++) {
+        for(int j=0; j<store.size(); j++) {
+            dist[j][home[i].x][home[i].y] = get_dist(home[i],store[j]);
+        }
+    }
+    run(0,0,visited);
+    cout<<answer;
+}
+
+void solve() {
+    input();
+    solution();
 }
 
 int main() {
@@ -64,33 +87,5 @@ int main() {
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin>>n>>m;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=n; j++) {
-            cin>>map[i][j];
-            if(map[i][j]==2) {
-                store.push_back({i,j});
-            } else if(map[i][j]==1) {
-                home.push_back({i,j});
-            }
-        }
-    }
-
-    stores = store.size();
-    delete_count = stores - m;
-
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=n; j++) {
-            if(map[i][j]!=1) {
-                continue;
-            }
-            for(int k=0; k<stores; k++) {
-                dist[k][i][j] = calc_distance({i,j}, store[k]);
-            }
-        }
-    }
-
-    run(0,1,visitarray);
-
-    cout<<answer;
+    solve();
 }

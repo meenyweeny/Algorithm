@@ -1,25 +1,38 @@
-//
-// Created by 이경민 on 2022/08/08.
-//
 #include<iostream>
-#include<algorithm>
 using namespace std;
 
-int n,answer;
-int t[15];
-int p[15];
+int n;
+int t[16];
+int p[16];
+int answer = -1;
 
-void solve(int next_index, int money) {
-    for(int i=next_index; i<n; i++) {
-        if(i+t[i] > n) {
-            answer = max(answer,money);
-            continue;
-        }
-        if(i+t[i]==n) {
-            answer = max(answer,money+p[i]);
-        }
-        solve(i+t[i],money+p[i]);
+void input() {
+    cin>>n;
+    for(int i=1; i<=n; i++) {
+        cin>>t[i]>>p[i];
     }
+}
+
+void run(int day,int price) {
+    if(day-1>n) {
+        return;
+    }
+    answer = max(answer, price);
+    for(int i=day; i<=n; i++) {
+        run(i+t[i],price+p[i]);
+    }
+}
+
+void solution() {
+    for(int i=1; i<=n; i++) {
+        run(i,0);
+    }
+    cout<<answer;
+}
+
+void solve() {
+    input();
+    solution();
 }
 
 int main() {
@@ -27,8 +40,5 @@ int main() {
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin>>n;
-    for(int i=0; i<n; i++) cin>>t[i]>>p[i];
-    solve(0,0);
-    cout<<answer;
+    solve();
 }

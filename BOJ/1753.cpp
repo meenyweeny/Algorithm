@@ -1,45 +1,39 @@
-//
-// Created by 이경민 on 2023/01/17.
-//
 #include<iostream>
 #include<queue>
 #include<vector>
 using namespace std;
 
-//다익스트라에서 visited 쓰지 않는 이유 -> 아까 방문했던 점이 또 바뀔 수 있기 때문에
-//대신 바뀌는(갱신되는) 애들만 큐에 넣기 때문에 정확히 할 수 있다
-
-#define INF 1987654321
-
 struct edge {
     int vertex;
     int weight;
 
-    bool operator<(const edge& b) const { //최소 힙 만들기 위한 연산자 오버로딩
+    bool operator<(const edge& b) const {
         return weight > b.weight;
     }
 };
 
-int v,e,a,b,w,k;
+int v,e,k;
+const string inf_str = "INF";
+const int inf = 2e9;
+vector<edge> graph[20001];
 int dist[20001];
-vector<edge> adj[20001];
-priority_queue<edge> pq;
 
 void input() {
-    cin>>v>>e>>k;
-    while(e--) {
-        cin>>a>>b>>w;
-        adj[a].push_back({b, w});
+    cin>>v>>e;
+    cin>>k;
+    int u,v,w;
+    for(int i=0; i<e; i++) {
+        cin>>u>>v>>w;
+        graph[u].push_back({v,w});
     }
 }
 
 void solution() {
-    for(int i=0; i<=v; i++) { //모든 정점에 대해 최단거리 무한대로 초기화
-        dist[i] = INF;
-    }
+    fill(dist,dist+20001,inf);
 
-    pq.push({k,0}); //시작점을 큐에 넣고
-    dist[k] = 0; //dist를 0으로 설정
+    priority_queue<edge> pq;
+    pq.push({k,0});
+    dist[k]=0;
 
     while(!pq.empty()) {
         edge top = pq.top();
@@ -48,18 +42,14 @@ void solution() {
         int now_vertex = top.vertex;
         int now_weight = top.weight;
 
-        if(dist[now_vertex] < now_weight) { //이 구문 유무가 시간을 크게 좌우하진 않음
+        if(dist[now_vertex] < now_weight) {
             continue;
         }
 
-        int len = adj[now_vertex].size();
-        for(int i=0; i<len; i++) { //해당 정점에서 나가는 간선들을 전체 순회하며
-            edge next = adj[now_vertex][i];
+        int length = graph[now_vertex].size();
+        for(int i=0; i<length; i++) {
+            edge next = graph[now_vertex][i];
 
-            //다음 갈 수 있는 정점들에 대해 최단거리를 계산
-            //다음에 갈 점의 최단거리보다 지금 점 + 다음 점으로의 가중치가 더 작다면
-            //최단거리를 갱신하고, 큐에 해당 지점을 넣음
-            //방금 계산한 '현재의' 최단거리르 넣어야 함
             if(dist[next.vertex] > now_weight + next.weight) {
                 dist[next.vertex] = now_weight + next.weight;
                 pq.push({next.vertex, dist[next.vertex]});
@@ -68,8 +58,8 @@ void solution() {
     }
 
     for(int i=1; i<=v; i++) {
-        if(dist[i]==INF) {
-            cout<<"INF";
+        if(dist[i]>=inf) {
+            cout << inf_str;
         } else {
             cout<<dist[i];
         }
@@ -77,11 +67,15 @@ void solution() {
     }
 }
 
+void solve() {
+    input();
+    solution();
+}
+
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    input();
-    solution();
+    solve();
 }

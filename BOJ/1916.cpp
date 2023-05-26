@@ -1,47 +1,44 @@
-//
-// Created by 이경민 on 2023/01/25.
-//
 #include<iostream>
 #include<vector>
 #include<queue>
 using namespace std;
 
+const int inf = 2e9;
+
 struct edge {
     int vertex;
     int weight;
 
-    bool operator<(const edge& b) const {
+    bool operator<(const edge & b) const {
         return weight < b.weight;
     }
 };
 
-int n,m,u,v;
-int dist[1001];
+int n,m,s,d;
 vector<edge> graph[1001];
 priority_queue<edge> pq;
-const int inf = 1987654321;
+int dist[1001];
 
 void input() {
     cin>>n>>m;
-    int d;
+    int v,u,w;
     for(int i=0; i<m; i++) {
-        cin>>u>>v>>d;
-        graph[u].push_back({v,d});
-//        graph[v].push_back({u,d});
+        cin>>v>>u>>w;
+        graph[v].push_back({u,w});
     }
-    cin>>u>>v;
+    cin>>s>>d;
 }
 
 void solution() {
-    fill(dist, dist+n+1, inf);
-    pq.push({u,0});
-    dist[u] = 0;
+    fill(dist,dist+1001,inf);
+    dist[s]=0;
+    pq.push({s,0});
 
     while(!pq.empty()) {
         edge top = pq.top();
         pq.pop();
 
-        if(dist[top.vertex] < top.weight) {
+        if(top.weight>dist[top.vertex]) {
             continue;
         }
 
@@ -49,13 +46,18 @@ void solution() {
         for(int i=0; i<length; i++) {
             edge next = graph[top.vertex][i];
 
-            if(dist[next.vertex] > next.weight + top.weight) {
-                dist[next.vertex] = next.weight + top.weight;
-                pq.push({next.vertex, dist[next.vertex]});
+            if(dist[next.vertex] > top.weight+next.weight) {
+                dist[next.vertex] = top.weight+next.weight;
+                pq.push({next.vertex,dist[next.vertex]});
             }
         }
     }
-    cout<<dist[v];
+    cout<<dist[d];
+}
+
+void solve() {
+    input();
+    solution();
 }
 
 int main() {
@@ -63,6 +65,5 @@ int main() {
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    input();
-    solution();
+    solve();
 }

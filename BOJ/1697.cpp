@@ -1,48 +1,10 @@
-//
-// Created by 이경민 on 2022/10/13.
-//
 #include<iostream>
 #include<queue>
-#include<algorithm>
 using namespace std;
 
+const int max_point = 100000;
 int n,k;
-int counts[100001];
-
-bool is_in_range(int x) {
-    return x>=0 && x<=100000;
-}
-
-int bfs() {
-    queue<int> q;
-    q.push(n);
-    while(!q.empty()) {
-        int now = q.front();
-        q.pop();
-        if(now==k) {
-            return counts[now];
-        }
-        if(is_in_range(now-1)) {
-            if(counts[now-1]==0) {
-                q.push(now-1);
-                counts[now-1] = counts[now]+1;
-            }
-        }
-        if(is_in_range(now+1)) {
-            if(counts[now+1]==0) {
-                q.push(now+1);
-                counts[now+1] = counts[now]+1;
-            }
-        }
-        if(is_in_range(now*2)) {
-            if(counts[now*2]==0) {
-                q.push(now*2);
-                counts[now*2] = counts[now]+1;
-            }
-        }
-    }
-    return 0;
-}
+int visited[max_point+1];
 
 int main() {
     cin.tie(NULL);
@@ -50,5 +12,38 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin>>n>>k;
-    cout<<bfs();
+    queue<int> q;
+    q.push(n);
+
+    int cnt;
+    while(!q.empty()) {
+        int now = q.front();
+        cnt = visited[now];
+        q.pop();
+
+        if(now == k) {
+            cout << cnt;
+            break;
+        }
+
+        ++cnt;
+        if(now - 1 >= 0 && now - 1 <= max_point) {
+            if(visited[now - 1] == 0) {
+                q.push(now - 1);
+                visited[now - 1]=cnt;
+            }
+        }
+        if(now + 1 <= max_point) {
+            if(visited[now + 1] == 0) {
+                q.push(now + 1);
+                visited[now + 1]=cnt;
+            }
+        }
+        if(now * 2 <= max_point) {
+            if(visited[now * 2] == 0) {
+                q.push(now * 2);
+                visited[now * 2]=cnt;
+            }
+        }
+    }
 }

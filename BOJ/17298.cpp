@@ -1,36 +1,35 @@
-//
-// Created by 이경민 on 2022/08/20.
-//
 #include<iostream>
-#include<stack>
-#include<cstring>
+#include<deque>
 using namespace std;
 
-#define MAX 1000000 + 1
+const int sz = 1e6 + 2;
+int n;
+deque<pair<int,int>> dq;
+int answer[sz];
 
-int n,x;
-int arr[MAX];
-stack<pair<int,int>> st;
+void solve() {
+    fill(answer,answer+sz,-1);
+    cin>>n;
+    int k,top;
+    for(int i=1; i<=n; i++) {
+        cin>>k;
+        top = dq.empty() ? -1 : dq.back().first;
+        while(!dq.empty() && k > top) {
+            answer[dq.back().second] = k;
+            dq.pop_back();
+            top = dq.empty() ? -1 : dq.back().first;
+        }
+        dq.push_back({k, i});
+    }
+    for(int i=1; i<=n; i++) {
+        cout<<answer[i]<<' ';
+    }
+}
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin>>n;
-    memset(arr,-1,sizeof(arr));
-    for(int i=1; i<=n; i++) {
-        cin>>x;
-        while(!st.empty()) {
-            if(st.top().first < x) {
-                arr[st.top().second] = x;
-                st.pop();
-            }
-            else break;
-        }
-        st.push({x,i});
-    }
-    for(int i=1; i<=n; i++) {
-        cout<<arr[i]<<" ";
-    }
+    solve();
 }

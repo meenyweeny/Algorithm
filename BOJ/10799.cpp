@@ -1,33 +1,36 @@
-//
-// Created by 이경민 on 2022/08/17.
-//
 #include<iostream>
+#include<string>
+#include<vector>
 using namespace std;
 
-string cmd;
-int sticks, answer;
+int answer, stick;
+
+void solve() {
+	string str;
+	cin >> str;
+
+	int length = str.size();
+	for (int i = 0; i < length; i++) {
+		if (str[i] == '(') {
+			++stick;
+		} else {
+			if (str[i - 1] == '(') {
+				answer += (--stick);
+			}
+			else {
+				--stick;
+				++answer;
+			}
+		}
+	}
+	answer += stick;
+	cout << answer;
+}
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>cmd;
-    int length = cmd.length();
-    for(int i=0; i<length; i++) {
-        if(cmd[i]=='('){
-            ++sticks;
-        }
-        else { // ')'
-            if(cmd[i-1]=='(') { // "()" 레이저로 자를 때를 뜻함
-                --sticks;
-                answer+=sticks;
-            }
-            else {
-                --sticks;
-                ++answer;
-            }
-        }
-    }
-    cout<<answer;
+	solve();
 }

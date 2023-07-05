@@ -1,53 +1,50 @@
-//
-// Created by 이경민 on 2022/08/17.
-//
 #include<iostream>
+#include<string>
 #include<deque>
-#include<stack>
 using namespace std;
 
-string cmd;
-int m;
-char ch,x;
+deque<char> lhs, rhs;
 
-deque<char> front;
-stack<char> back;
+void solve() {
+	string str;
+	cin >> str;
+
+	for (auto s : str) {
+		lhs.push_back(s);
+	}
+
+	int m;
+	char a;
+	cin >> m;
+
+	while (m--) {
+		cin >> a;
+		if (a == 'P') {
+			cin >> a;
+			lhs.push_back(a);
+		} else if (a == 'L' && !lhs.empty()) {
+			rhs.push_front(lhs.back());
+			lhs.pop_back();
+		} else if (a == 'D' && !rhs.empty()) {
+			lhs.push_back(rhs.front());
+			rhs.pop_front();
+		} else if (a == 'B' && !lhs.empty()) {
+			lhs.pop_back();
+		}
+	}
+
+	for (auto l : lhs) {
+		cout << l;
+	}
+	for (auto r : rhs) {
+		cout << r;
+	}
+}
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>cmd;
-    cin>>m;
-    for(auto i:cmd) front.push_back(i);
-    while(m--){
-        cin>>ch;
-        if(ch=='L') {
-            if(front.empty()) continue;
-            back.push(front.back());
-            front.pop_back();
-        }
-        else if(ch=='D') {
-            if(back.empty()) continue;
-            front.push_back(back.top());
-            back.pop();
-        }
-        else if(ch=='B') {
-            if(front.empty()) continue;
-            front.pop_back();
-        }
-        else if(ch=='P') {
-            cin>>x;
-            front.push_back(x);
-        }
-    }
-    while(!front.empty()) {
-        cout<<front.front();
-        front.pop_front();
-    }
-    while(!back.empty()) {
-        cout<<back.top();
-        back.pop();
-    }
+	solve();
 }

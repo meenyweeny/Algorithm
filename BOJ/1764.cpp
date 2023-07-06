@@ -1,35 +1,37 @@
-//
-// Created by 이경민 on 2022/06/01.
-//
 #include<iostream>
-#include<set>
 #include<string>
-#include<vector>
+#include<unordered_set>
+#include<set>
 #include<algorithm>
 using namespace std;
 
-int n,m;
-string str;
-set<string> s;
-vector<string> v;
+int n, m;
+unordered_set<string> s;
+set<string> answer;
+
+void solve() {
+	cin >> n >> m;
+	string str;
+	while (n--) {
+		cin >> str;
+		s.insert(str);
+	}
+	while (m--) {
+		cin >> str;
+		if (s.count(str)) {
+			answer.insert(str);
+		}
+	}
+	cout << answer.size() << '\n';
+	for (auto a : answer) {
+		cout << a << '\n';
+	}
+}
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>n>>m;
-    while(n--){
-        cin>>str;
-        s.insert(str);
-    }
-    while(m--){
-        cin>>str;
-        if(s.contains(str)) v.push_back(str);
-    }
-    sort(v.begin(),v.end());
-    cout<<v.size()<<"\n";
-    for(auto i:v){
-        cout<<i<<"\n";
-    }
+	solve();
 }

@@ -1,42 +1,39 @@
 #include<iostream>
 using namespace std;
 
-int n;
-int dist[11][11];
+int n, answer = 2e9;
+int w[11][11];
 bool visited[11];
-int answer = 2e9;
 
-void input() {
-    cin>>n;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=n; j++) {
-            cin>>dist[i][j];
-        }
-    }
-}
-
-void solution(int before, int count, int length, bool visit[11]) {
+void process(int before,int count,int sum) {
     if(count==n) {
-        if(dist[before][1]!=0) {
-            length += dist[before][1];
-            answer = min(answer,length);
+        if(w[before][1]) {
+            sum += w[before][1];
+            answer = min(answer,sum);
         }
         return;
     }
-    for(int j=2; j<=n; j++) {
-        if(!visit[j] && dist[before][j]!=0) {
-            visit[j] = true;
-            length += dist[before][j];
-            solution(j,count+1,length,visit);
-            visit[j] = false;
-            length -= dist[before][j];
+    for(int i=2; i<=n; i++) {
+        if(visited[i]) {
+            continue;
         }
+        if(!w[before][i]) {
+            continue;
+        }
+        visited[i] = true;
+        process(i,count+1,sum+w[before][i]);
+        visited[i] = false;
     }
 }
 
 void solve() {
-    input();
-    solution(1,1,0,visited);
+    cin>>n;
+    for(int i=1; i<=n; i++) {
+        for(int j=1; j<=n; j++) {
+            cin>>w[i][j];
+        }
+    }
+    process(1,1,0);
     cout<<answer;
 }
 

@@ -1,79 +1,46 @@
 #include<iostream>
 #include<string>
-#include<deque>
-#include<queue>
 using namespace std;
 
-string bomb, str;
-int small[26], big[26], num[10];
-deque<pair<char,bool>> dq;
-
-void init() {
-	for (int i = 0; i < bomb.length(); i++) {
-		char ch = bomb[i];
-		if (ch >= 'A' && ch <= 'Z') {
-			big[ch - 'A'] = i + 1;
-		} else if (ch >= 'a' && ch <= 'z') {
-			small[ch - 'a'] = i + 1;
-		} else {
-			num[ch - '0'] = i + 1;
-		}
-	}
-}
-
-int get_index_value(char ch) {
-	if (ch >= 'A' && ch <= 'Z') {
-		return big[ch - 'A'];
-	} else if (ch >= 'a' && ch <= 'z') {
-		return small[ch - 'a'];
-	} else {
-		return num[ch - '0'];
-	}
-}
+const int sz = 1e6 + 1;
+string str, bomb;
+char answer[sz];
+int back_index;
+int str_size, bomb_size;
 
 bool check_string() {
-	pair<char, bool> before;
-	before = dq.back();
-	if (get_index_value(before.first) == bomb.size() && before.second) {
-		for (int i = 0; i < bomb.size(); i++) {
-			dq.pop_back();
+	int start_point = back_index - bomb_size + 1;
+	for (int i = 0; i < bomb.size(); i++) {
+		if (bomb[i] != answer[start_point + i]) {
+			return false;
 		}
-		return true;
-	} else {
-		return false;
 	}
+	return true;
 }
 
 void solve() {
 	cin >> str;
 	cin >> bomb;
-	init();
-	int value;
-	pair<char, bool> before;
-	for (auto s : str) {
-		value = get_index_value(s);
-		if (dq.empty()) {
-			dq.push_back({ s, value == 1 });
-		}
-		else {
-			if (!value) {
-				dq.push_back({ s,false });
-			} else {
-				before = dq.back();
-				bool flag = value == 1 ? 1 : (get_index_value(before.first) + 1 == value && before.second);
-				dq.push_back({ s, flag });
+
+	str_size = str.size();
+	bomb_size = bomb.size();
+
+	for (int i = 0; i < str_size; i++) {
+		char ch = str[i];
+		answer[back_index] = ch;
+		if (answer[back_index] == bomb[bomb_size -1] && back_index>= bomb_size -1) {
+			if (check_string()) {
+				back_index -= bomb_size;
 			}
 		}
-		check_string();
+		++back_index;
+		answer[back_index] = 0;
 	}
 
-	if (dq.empty()) {
+	if (!back_index) {
 		cout << "FRULA";
 	} else {
-		while (!dq.empty()) {
-			cout << dq.front().first;
-			dq.pop_front();
-		}
+		cout << answer;
 	}
 }
 

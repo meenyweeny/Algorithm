@@ -1,78 +1,63 @@
 #include<iostream>
-#include<vector>
+#include<queue>
 using namespace std;
 
-int answer;
-vector<int> pos,neg;
-int n;
-bool zero;
+int n, answer;
+priority_queue<int, vector<int>, less<int>> pos;
+priority_queue<int, vector<int>, greater<int>> neg;
 
 void input() {
-    cin>>n;
-    int k;
-    for(int i=0; i<n; i++) {
-        cin>>k;
-        if(k>0) {
-            pos.push_back(k);
-        } else if(k<0) {
-            neg.push_back(k);
-        } else {
-            zero = true;
-        }
-    }
+	cin >> n;
+	int k;
+	for (int i = 0; i < n; i++) {
+		cin >> k;
+		if (k <= 0) {
+			neg.push(k);
+		}
+		else {
+			pos.push(k);
+		}
+	}
 }
 
 void solution() {
-    sort(pos.begin(), pos.end());
-    sort(neg.begin(), neg.end());
-    reverse(neg.begin(), neg.end());
+	int a, b, value;
+	while (pos.size() > 1) {
+		a = pos.top();
+		pos.pop();
+		b = pos.top();
+		pos.pop();
+		value = a * b > a + b ? a * b : a + b;
+		answer += (value);
+	}
+	if (!pos.empty()) {
+		answer += pos.top();
+	}
 
-    while(!pos.empty()) {
-        if(pos.size()>1) {
-            int front = pos.back();
-            pos.pop_back();
-            int back = pos.back();
-            pos.pop_back();
-            if(front+back < front*back) {
-                answer += (front*back);
-            } else {
-                answer += (front+back);
-            }
-        } else {
-            answer += pos.back();
-            pos.pop_back();
-        }
-    }
+	while (neg.size() > 1) {
+		a = neg.top();
+		neg.pop();
+		b = neg.top();
+		neg.pop();
+		value = a * b > a + b ? a * b : a + b;
+		answer += (value);
+	}
+	if (!neg.empty()) {
+		answer += neg.top();
+	}
 
-    while(!neg.empty()) {
-        if(neg.size()>1) {
-            int front = neg.back();
-            neg.pop_back();
-            int back = neg.back();
-            neg.pop_back();
-            answer += (front*back);
-        } else {
-            if(zero) {
-                neg.pop_back();
-            } else {
-                answer += neg.back();
-                neg.pop_back();
-            }
-        }
-    }
-
-    cout<<answer;
+	cout << answer;
 }
 
 void solve() {
-    input();
-    solution();
+	input();
+	solution();
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    solve();
+	solve();
 }

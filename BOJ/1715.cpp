@@ -1,32 +1,41 @@
-//
-// Created by 이경민 on 2022/09/07.
-//
 #include<iostream>
 #include<queue>
 using namespace std;
 
-int n,x;
-int sum,tmp;
+const int sz = 1e5 + 1;
+int n, answer;
 priority_queue<int, vector<int>, greater<int>> pq;
 
-int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
-    cin>>n;
+void solve() {
+	cin >> n;
+	int k;
+	for (int i = 0; i < n; i++) {
+		cin >> k;
+		pq.push(k);
+	}
+	while (pq.size() > 1) {
+		int a = pq.top();
+		pq.pop();
+		int b = pq.top();
+		pq.pop();
+		answer += a;
+		answer += b;
+		if (pq.empty()) {
+			break;
+		}
+		else {
 
-    for(int i=0; i<n; i++) {
-        cin >> x;
-        pq.push(x);
-    }
-    while(pq.size()>1){
-        tmp=pq.top();
-        sum += pq.top();
-        pq.pop();
-        tmp+=pq.top();
-        sum += pq.top();
-        pq.pop();
-        pq.push(tmp);
-    }
-    cout<<sum;
+			pq.push(a + b);
+		}
+	}
+	cout << answer;
+}
+
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
+	solve();
 }

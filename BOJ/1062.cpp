@@ -1,54 +1,40 @@
 #include<iostream>
-#include<vector>
 #include<string>
 #include<algorithm>
 using namespace std;
 
-int n, k, answer = -1;
-vector<string> dict;
-int checked;
+int n, k, answer, checked;
+int arr[50];
 
 void init() {
-	char arr[5] = {'a', 'c', 'i', 'n', 't'};
-	for (auto a : arr) {
-		int now = (1 << (a - 'a'));
-		checked |= now;
+	char ch[5] = { 'a','n','t','i','c' };
+	for (auto c : ch) {
+		checked |= (1 << (c - 'a'));
 	}
 }
 
-void check_string(int comp) {
+int compare(int comp) {
 	int now = 0;
-	int bit;
-	bool is_on;
-	for (auto s : dict) {
-		is_on = true;
-		for (int i = 4; i < s.length() - 4; i++) {
-			bit = (1 << (s[i] - 'a'));
-			is_on = comp & bit;
-			if (!is_on) {
-				break;
-			}
-		}
-		now += is_on;
+	for (int i = 0; i < n; i++) {
+		now += ((comp | arr[i]) == comp);
 	}
-	answer = max(answer, now);
+	return now;
 }
 
-void process(int start, int count, int comp) {
+void process(int comp, int start, int count) {
 	if (count == k) {
-		check_string(comp);
+		answer = max(answer,compare(comp));
 		return;
 	}
-
+	int bit;
 	for (int i = start; i < 26; i++) {
-		int bit = (1 << i);
+		bit = 1 << i;
 		if (comp & bit) {
 			continue;
 		}
-		int tmp = comp;
-		tmp |= bit;
-		process(i + 1, count + 1, tmp);
-		tmp = comp;
+		comp |= bit;
+		process(comp, i + 1, count + 1);
+		comp &= ~bit;
 	}
 }
 
@@ -57,16 +43,16 @@ void solve() {
 	string cmd;
 	for (int i = 0; i < n; i++) {
 		cin >> cmd;
-		dict.push_back(cmd);
+		for (auto c : cmd) {
+			arr[i] |= (1 << (c - 'a'));
+		}
 	}
-	if (k < 5) {
-		cout << 0;
-	} else {
+	k -= 5;
+	if (k >= 0) {
 		init();
-		k -= 5;
-		process(1,0,checked);
-		cout << answer;
+		process(checked, 0, 0);
 	}
+	cout << answer;
 }
 
 

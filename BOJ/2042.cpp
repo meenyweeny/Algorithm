@@ -1,95 +1,82 @@
-//
-// Created by 이경민 on 2023/01/11.
-//
 #include<iostream>
 using namespace std;
 
-int n,m,k;
-int starting_index;
-long long a,b,c;
-long long arr[1000001];
-long long tree[4000004];
+const int sz = 1e6 + 1;
+int n, m, k;
+long long tree[sz << 2];
+int height;
 
-int get_index(int x) {
-    int index = 2;
-    while(1) {
-        if(index>=n) {
-            break;
-        }
-        index *= 2;
-    }
-    return index;
+void get_height() {
+	height = 2;
+	while (height <= n) {
+		height *= 2;
+	}
 }
 
-void init() {
-    for(int i=0; i<n; i++) {
-        tree[i+starting_index] = arr[i];
-    }
-    for(int i=starting_index-1; i>0; i--) {
-        tree[i] = tree[2*i] + tree[2*i+1];
-    }
+void build() {
+	for (int i = height - 1; i >= 1; i--) {
+		tree[i] = tree[i * 2] + tree[i * 2 + 1];
+	}
 }
 
-void update(int idx, long long number) {
-    arr[idx] = number;
-    idx += starting_index;
-    long long gap = number - tree[idx];
-    while(1) {
-        if(idx<=0) {
-            break;
-        }
-        tree[idx] += gap;
-        idx /= 2;
-    }
+void update(int index, long long value) {
+	index += height;
+	--index;
+	long long gap = tree[index] - value;
+	while (index > 0) {
+		tree[index] -= gap;
+		index /= 2;
+	}
 }
 
 long long query(int start, int end) {
-    long long sum = 0;
-    start += starting_index;
-    end += starting_index;
-    while(start<=end) {
-        if(start%2 == 1) {
-            sum += tree[start];
-            ++start;
-        }
-        if(end%2 == 0) {
-            sum += tree[end];
-            --end;
-        }
-        start /= 2;
-        end /= 2;
-    }
-    return sum;
+	start += height;
+	end += height;
+	--start;
+	--end;
+	long long sum = 0;
+	while(start <= end) {
+		if (start % 2) {
+			sum += tree[start];
+			++start;
+		}
+		if (!(end % 2)) {
+			sum += tree[end];
+			--end;
+		}
+		start /= 2;
+		end /= 2;
+	}
+	return sum;
 }
 
 void input() {
-    cin>>n>>m>>k;
-    for(int i=0; i<n; i++) {
-        cin>>arr[i];
-    }
-    starting_index = get_index(n);
+	cin >> n >> m >> k;
+	get_height();
+	for (int i = 0; i < n; i++) {
+		cin >> tree[i + height];
+	}
 }
 
-void solution() {
-    init();
-    for(int i=0; i<m+k; i++) {
-        cin>>a>>b>>c;
-        if(a==1) {
-            --b;
-            update(b,c);
-        } else {
-            --b;
-            --c;
-            cout<<query(b,c)<<"\n";
-        }
-    }
+void solve() {
+	input();
+	build();
+	long long a, b, c;
+	m += k;
+	while (m--) {
+		cin >> a >> b >> c;
+		if (a == 1) {
+			update(b, c);
+		} else {
+			cout << query(b, c) << '\n';
+		}
+	}
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    input();
-    solution();
+	solve();
 }

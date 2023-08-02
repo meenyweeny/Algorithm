@@ -1,22 +1,22 @@
-#include <string>
-#include <map>
-#include <string>
-#include <algorithm>
+#include<iostream>
+#include<map>
+#include<string>
+#include<algorithm>
 using namespace std;
 
-map<int, int> mx;
-map<int, int> my;
-int cnt[10];
-using namespace std;
+string x, y;
+int mx[10];
+int my[10];
 
-string solution(string x, string y) {
-    string s = "";
+void solve() {
+	cin >> x >> y;
 	for (auto q : x) {
 		++mx[q - '0'];
 	}
 	for (auto q : y) {
 		++my[q - '0'];
 	}
+	string s = "";
 	for (int i = 9; i > 0; i--) {
 		int count = min(mx[i], my[i]);
 		for (int j = 0; j < count; j++) {
@@ -32,7 +32,16 @@ string solution(string x, string y) {
 		}
 	}
 	if (s == "") {
-		s = "-1";
+		cout << -1;
+	} else {
+		cout << s;
 	}
-    return s;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
+	solve();
 }

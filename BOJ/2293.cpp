@@ -1,42 +1,31 @@
-//
-// Created by 이경민 on 2023/01/31.
-//
 #include<iostream>
-#include<vector>
 #include<algorithm>
 using namespace std;
 
-int n,k;
-int price[10001];
-vector<int> coin;
+int n, k;
+int arr[100];
+int dp[10001];
 
-void input() {
-    cin>>n>>k;
-    int x;
-    for(int i=0; i<n; i++) {
-        cin>>x;
-        coin.push_back(x);
-    }
-}
+void solve() {
+	cin >> n >> k;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
 
-void solution() {
-    sort(coin.begin(), coin.end());
-    int now;
-    price[0] = 1;
-    for(int i=0; i<n; i++) {
-        now = coin[i];
-        for(int j=now; j<=k; j++) {
-            price[j] += price[j-now];
-        }
-    }
-    cout<<price[k];
+	sort(arr, arr + n);
+	dp[0] = 1;
+	for (int i = 0; i < n; i++) {
+		for (int j = arr[i]; j <= k; j++) {
+			dp[j] += dp[j - arr[i]];
+		}
+	}
+	cout << dp[k];
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    input();
-    solution();
+	solve();
 }

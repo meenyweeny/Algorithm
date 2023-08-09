@@ -1,52 +1,49 @@
-//
-// Created by 이경민 on 2023/01/11.
-//
 #include<iostream>
-#include<vector>
 #include<algorithm>
 using namespace std;
 
-int n,m;
-vector<int> tree;
-int answer;
+const int sz = 1e6;
+int n, m;
+int arr[sz];
 
-void input() {
-    cin>>n>>m;
-    int x;
-    for(int i=0; i<n; i++) {
-        cin>>x;
-        tree.push_back(x);
-    }
+bool isValid(int height) {
+	unsigned long long answer = 0;
+	for (int i = 0; i < n; i++) {
+		if (arr[i] - height < 0) {
+			continue;
+		}
+		answer += (arr[i] - height);
+	}
+	return answer >= m;
 }
 
-void solution() {
-    sort(tree.begin(), tree.end());
-    int end = tree[tree.size() - 1];
-    int start = 0;
-
-    while(start<=end) {
-        long long total = 0;
-        int mid = (start + end) / 2;
-        for(int i=0; i<n; i++) {
-            if(tree[i]>mid) {
-                total += (tree[i] - mid);
-            }
-        }
-        if(total<m) {
-            end = mid - 1;
-        } else {
-            answer = mid;
-            start = mid + 1;
-        }
-    }
-    cout<<answer;
+void solve() {
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	sort(arr, arr + n);
+	int max_idx, min_idx;
+	min_idx = 0;
+	max_idx = arr[n - 1];
+	int answer = -1;
+	
+	while (min_idx <= max_idx) {
+		int mid_idx = (max_idx + min_idx) / 2;
+		if (!isValid(mid_idx)) {
+			max_idx = mid_idx-1;
+		} else {
+			min_idx = mid_idx+1;
+			answer = max(answer, mid_idx);
+		}
+	}
+	cout << answer;
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    input();
-    solution();
+	solve();
 }

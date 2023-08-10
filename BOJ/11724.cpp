@@ -1,50 +1,51 @@
-//
-// Created by 이경민 on 2022/10/13.
-//
 #include<iostream>
-#include<vector>
-#include<queue>
+#include<deque>
 using namespace std;
 
-int n,m,u,v;
-vector<int> graph[1001];
-bool visited[1001];
+const int sz = 1e3 + 1;
+int n, m;
+deque<int> graph[sz];
+bool visited[sz];
 
 void bfs(int x) {
-    queue<int> q;
-    q.push(x);
-    visited[x]=true;
+	deque<int> d;
+	d.push_back(x);
+	visited[x] = true;
+	while (!d.empty()) {
+		int front = d.front();
+		d.pop_front();
+		for (auto g : graph[front]) {
+			if (visited[g]) {
+				continue;
+			}
+			visited[g] = true;
+			d.push_back(g);
+		}
+	}
+}
 
-    while(!q.empty()) {
-        int front = q.front();
-        q.pop();
-        for(auto i:graph[front]){
-            if(!visited[i]) {
-                visited[i]=true;
-                q.push(i);
-            }
-        }
-    }
+void solve() {
+	cin >> n >> m;
+	int u, v;
+	while (m--) {
+		cin >> u >> v;
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+	int answer = 0;
+	for (int i = 1; i <= n; i++) {
+		if (!visited[i]) {
+			bfs(i);
+			++answer;
+		}
+	}
+	cout << answer;
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>n>>m;
-    while(m--) {
-        cin>>u>>v;
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
-
-    int answer = 0;
-    for(int i=1; i<=n; i++) {
-        if(!visited[i]) {
-            bfs(i);
-            ++answer;
-        }
-    }
-    cout<<answer;
+	solve();
 }

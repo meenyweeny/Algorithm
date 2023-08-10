@@ -2,82 +2,65 @@
 #include<queue>
 using namespace std;
 
-struct Point {
-    int x,y,count;
-};
+const int sz = 1e3;
+int n, m;
+int map[sz][sz];
+queue<pair<pair<int, int>, int>> q;
 
-int m,n;
-int map[1001][1001];
-bool visited[1001][1001];
-
-void input() {
-    cin>>m>>n;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=m; j++) {
-            cin>>map[i][j];
-        }
-    }
-}
-
-bool is_in_range(int x,int y) {
-    return x>=1 && y>=1 && x<=n && y<=m;
+bool check_range(int x, int y) {
+	return x >= 0 && y >= 0 && x < n && y < m;
 }
 
 int bfs() {
-    queue<Point> q;
-    int count=0;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=m; j++) {
-            if(map[i][j]==1) {
-                visited[i][j] = true;
-                q.push({i,j,0});
-            }
-        }
-    }
-    while(!q.empty()) {
-        Point front = q.front();
-        q.pop();
-        count = front.count;
-        for(int i=0; i<4; i++) {
-            int nx = front.x + "2011"[i] - '1';
-            int ny = front.y + "1120"[i] - '1';
+	int answer = 0;
+	while (!q.empty()) {
+		int fx = q.front().first.first;
+		int fy = q.front().first.second;
+		int count = q.front().second + 1;
+		answer = count-1;
+		q.pop();
 
-            if(!is_in_range(nx,ny)) {
-                continue;
-            }
-            if(visited[nx][ny]) {
-                continue;
-            }
-            if(map[nx][ny]!=0) {
-                continue;
-            }
-            map[nx][ny] = 1;
-            visited[nx][ny] = true;
-            q.push({nx,ny,front.count+1});
-        }
-    }
-    return count;
-}
+		for (int i = 0; i < 4; i++) {
+			int nx = fx + "2011"[i] - '1';
+			int ny = fy + "1120"[i] - '1';
 
-void solution() {
-    int count = bfs();
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=m; j++) {
-            count = (map[i][j] == 0) ? -1 : count;
-        }
-    }
-    cout<<count;
+			if (!check_range(nx, ny)) {
+				continue;
+			}
+			if (map[nx][ny]==1 || map[nx][ny]==-1) {
+				continue;
+			}
+			map[nx][ny] = 1;
+			q.push({ {nx,ny},count });
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (map[i][j] == 0) {
+				return -1;
+			}
+		}
+	}
+	return answer;
 }
 
 void solve() {
-    input();
-    solution();
+	cin >> m >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cin >> map[i][j];
+			if (map[i][j] == 1) {
+				q.push({ {i,j},0 });
+			}
+		}
+	}
+	cout<<bfs();
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    solve();
+	solve();
 }

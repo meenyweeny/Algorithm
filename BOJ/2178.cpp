@@ -1,79 +1,66 @@
-//
-// Created by 이경민 on 2022/10/04.
-//
 #include<iostream>
 #include<queue>
+#include<string>
 using namespace std;
 
-int n,m;
-string str;
-bool map[101][101];
-int dx[4] = {-1,0,0,1};
-int dy[4] = {0,-1,1,0};
-bool visited[101][101];
+const int sz = 1e2;
+int n, m;
+char map[sz][sz];
+bool visited[sz][sz];
 
-bool isInRange(int x,int y) {
-    return x>=1 && x<=n && y>=1 && y<=m;
+bool check_range(int x, int y) {
+	return x >= 0 && y >= 0 && x < n && y < m;
 }
 
-int bfs() {
-    queue<pair<pair<int,int>,int>> q;
-    q.push({{1,1},1});
-    visited[1][1] = true;
+void solve() {
+	cin >> n >> m;
+	string a;
+	for (int i = 0; i < n; i++) {
+		cin >> a;
+		for (int j = 0; j < m; j++) {
+			map[i][j] = a[j];
+		}
+	}
 
-    int nx,ny;
+	queue<pair<int,pair<int, int>>> q;
+	q.push({ 1, {0,0} });
+	visited[0][0] = true;
 
-    while(!q.empty()) {
+	while (!q.empty()) {
+		int count = q.front().first + 1;
+		int fx = q.front().second.first;
+		int fy = q.front().second.second;
+		q.pop();
 
-        int front_x = q.front().first.first;
-        int front_y = q.front().first.second;
-        int count = q.front().second;
-        q.pop();
+		if (fx == n - 1 && fy == m - 1) {
+			cout << count - 1;
+			break;
+		}
 
-        if(front_x == n && front_y == m) {
-            return count;
-        }
-
-        for(int i=0; i<4; i++) {
-            nx = front_x + dx[i];
-            ny = front_y + dy[i];
-
-            if(!isInRange(nx,ny)) {
-                continue;
-            }
-
-            if(!map[nx][ny]) {
-                continue;
-            }
-
-            if(visited[nx][ny]) {
-                continue;
-            }
-
-            visited[nx][ny] = true;
-
-            q.push({{nx,ny},count+1});
-        }
-    }
-
-    return -1;
+		for (int i = 0; i < 4; i++) {
+			int nx = fx + "2011"[i] - '1';
+			int ny = fy + "1120"[i] - '1';
+			if (!check_range(nx, ny)) {
+				continue;
+			}
+			if (visited[nx][ny]) {
+				continue;
+			}
+			if (map[nx][ny]=='0') {
+				visited[nx][ny] = true;
+				continue;
+			}
+			
+			visited[nx][ny] = true;
+			q.push({ count, {nx,ny} });
+		}
+	}
 }
-
-
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>n>>m;
-
-    for(int i=1; i<=n; i++) {
-        cin>>str;
-        for(int k=1; k<=m; k++) {
-            map[i][k] = (str[k-1] == '1');
-        }
-    }
-
-    cout<<bfs();
+	solve();
 }

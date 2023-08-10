@@ -1,66 +1,66 @@
-//
-// Created by 이경민 on 2022/10/04.
-//
 #include<iostream>
-#include<vector>
-#include<cstring>
-#include<queue>
+#include<deque>
+#include<algorithm>
 using namespace std;
 
-int n,m,v,a,b;
-bool visited[1001];
-vector<int> graph[1001];
+const int sz = 1e3 + 1;
+int n, m, v;
+deque<int> graph[sz];
+bool visited[sz];
 
 void dfs(int x) {
-    visited[x] = true;
-    cout<<x<<" ";
-    for(auto i:graph[x]) {
-        if(visited[i]) {
-            continue;
-        }
-        dfs(i);
-    }
+	visited[x] = true;
+	cout << x << " ";
+	for (auto g : graph[x]) {
+		if (visited[g]) {
+			continue;
+		}
+		dfs(g);
+	}
 }
 
-void bfs(int x) {
-    queue<int> q;
-    q.push(x);
-    visited[x] = true;
+void bfs() {
+	deque<int> d;
+	d.push_back(v);
+	visited[v] = true;
+	while (!d.empty()) {
+		int front = d.front();
+		cout << front << " ";
+		d.pop_front();
 
-    while(!q.empty()) {
-        int front = q.front();
-        q.pop();
-        cout<<front<<" ";
+		for (auto g : graph[front]) {
+			if (visited[g]) {
+				continue;
+			}
+			d.push_back(g);
+			visited[g] = true;
+		}
+	}
+}
 
-        for(auto i:graph[front]) {
-            if(visited[i]) {
-                continue;
-            }
-            q.push(i);
-            visited[i] = true;
-        }
-    }
+void solve() {
+	cin >> n >> m >> v;
+	int a, b;
+	while (m--) {
+		cin >> a >> b;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+	}
+
+	for (int i = 1; i <= n; i++) {
+		sort(graph[i].begin(), graph[i].end());
+	}
+
+	dfs(v);
+	cout << "\n";
+	fill(visited, visited + n + 1, false);
+	bfs();
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>n>>m>>v;
-
-    while(m--) {
-        cin>>a>>b;
-        graph[a].push_back(b);
-        graph[b].push_back(a);
-    }
-
-    for(int i=1; i<=n; i++) {
-        sort(graph[i].begin(), graph[i].end());
-    }
-
-    dfs(v);
-    cout<<"\n";
-    memset(visited,false,sizeof(visited));
-    bfs(v);
+	solve();
 }

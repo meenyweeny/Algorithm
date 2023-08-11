@@ -2,57 +2,43 @@
 #include<vector>
 using namespace std;
 
-struct Vertex {
-    int x,weight;
-};
+const int sz = 1e4 + 1;
+int n, node, dist = -1;
+vector<pair<int, int>> graph[sz];
+bool visited[sz];
 
-int n;
-vector<Vertex> graph[10001];
-bool visited[10001];
-int maxdist,maxnode;
-
-void dfs(int node, int distance) {
-    if(visited[node]) {
-        return;
-    }
-
-    visited[node] = true;
-    if(maxdist<distance) {
-        maxnode=node;
-        maxdist=distance;
-    }
-
-    for(auto i:graph[node]) {
-        dfs(i.x,distance+i.weight);
-    }
-}
-
-void input() {
-    cin>>n;
-    int u,v,d;
-    for(int i=1; i<n; i++) {
-        cin>>u>>v>>d;
-        graph[u].push_back({v,d});
-        graph[v].push_back({u,d});
-    }
-}
-
-void solution() {
-    dfs(1,0);
-    fill(visited,visited+10001,false);
-    dfs(maxnode,0);
-    cout<<maxdist;
+void dfs(int x, int d) {
+	visited[x] = true;
+	if (d > dist) {
+		node = x;
+		dist = d;
+	}
+	for (auto g : graph[x]) {
+		if (visited[g.first]) {
+			continue;
+		}
+		dfs(g.first, d + g.second);
+	}
 }
 
 void solve() {
-    input();
-    solution();
+	cin >> n;
+	int u, v, d;
+	for (int i = 1; i < n; i++) {
+		cin >> u >> v >> d;
+		graph[u].push_back({ v,d });
+		graph[v].push_back({ u,d });
+	}
+	dfs(1, 0);
+	fill(visited, visited + sz, false);
+	dfs(node, 0);
+	cout << dist;
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    solve();
+	solve();
 }

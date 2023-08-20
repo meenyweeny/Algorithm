@@ -1,14 +1,10 @@
-//
-// Created by 이경민 on 2023/01/05.
-//
 #include<iostream>
-#include<algorithm>
 using namespace std;
 
-#define MAX 100001
+const int sz = 1e5 + 1;
 int n;
-unsigned long long dist[MAX];
-unsigned long long price[MAX];
+unsigned long long dist[sz];
+unsigned long long price[sz];
 unsigned long long answer;
 
 void input() {
@@ -17,24 +13,30 @@ void input() {
         cin>>dist[i];
     }
     for(int i=0; i<n; i++) {
-        cin>>price[i];
+        cin >> price[i];
     }
 }
 
-void solve() {
-    unsigned long long mini = price[0];
-    unsigned long long road = dist[0];
-    for(int i=1; i<n-1; i++) {
-        if(mini>price[i]) {
-            answer += (road*mini);
-            mini = price[i];
-            road=dist[i];
+void solution() {
+    unsigned long long min_price = 2e9;
+    unsigned long long distance = 0;
+
+    for(int i=0; i<n-1; i++) {
+        if(min_price>price[i]) {
+            answer += (min_price * distance);
+            min_price = price[i];
+            distance = dist[i];
         } else {
-            road += dist[i];
+            distance += dist[i];
         }
     }
-    answer += (road*mini);
+    answer += (min_price * distance);
     cout<<answer;
+}
+
+void solve() {
+    input();
+    solution();
 }
 
 int main() {
@@ -42,6 +44,5 @@ int main() {
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    input();
     solve();
 }

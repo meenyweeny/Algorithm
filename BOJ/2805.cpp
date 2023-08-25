@@ -1,49 +1,56 @@
 #include<iostream>
-#include<algorithm>
 using namespace std;
 
 const int sz = 1e6;
-int n, m;
+int n,m;
 int arr[sz];
 
-bool isValid(int height) {
-	unsigned long long answer = 0;
-	for (int i = 0; i < n; i++) {
-		if (arr[i] - height < 0) {
-			continue;
-		}
-		answer += (arr[i] - height);
-	}
-	return answer >= m;
+void input() {
+    cin>>n>>m;
+    for(int i=0; i<n; i++) {
+        cin>>arr[i];
+    }
+}
+
+unsigned long long get_length(unsigned long long cut) {
+    unsigned long long ret = 0;
+    for(int i=0; i<n; i++) {
+        if(arr[i]<=cut) {
+            ret += 0;
+        } else {
+            ret += (arr[i]-cut);
+        }
+    }
+    return ret;
+}
+
+void solution() {
+    sort(arr,arr+n);
+    unsigned long long start = 1;
+    unsigned long long end = arr[n-1];
+    unsigned long long answer = 0;
+    while(start<=end) {
+        unsigned long long mid = (start+end)/2;
+        unsigned long long length = get_length(mid);
+        if(length>=m) {
+            start = mid+1;
+            answer = max(answer,mid);
+        } else {
+            end = mid-1;
+        }
+    }
+    cout<<answer;
 }
 
 void solve() {
-	cin >> n >> m;
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
-	sort(arr, arr + n);
-	int max_idx, min_idx;
-	min_idx = 0;
-	max_idx = arr[n - 1];
-	int answer = -1;
-	
-	while (min_idx <= max_idx) {
-		int mid_idx = (max_idx + min_idx) / 2;
-		if (!isValid(mid_idx)) {
-			max_idx = mid_idx-1;
-		} else {
-			min_idx = mid_idx+1;
-			answer = max(answer, mid_idx);
-		}
-	}
-	cout << answer;
+    input();
+    solution();
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
-	solve();
+    solve();
 }

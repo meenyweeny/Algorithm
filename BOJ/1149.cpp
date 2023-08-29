@@ -1,34 +1,49 @@
-//
-// Created by 이경민 on 2022/09/09.
-//
 #include<iostream>
 #include<algorithm>
 using namespace std;
 
-#define R 0
-#define G 1
-#define B 2
+const int sz = 1e3;
+int n;
+int color[sz][3]; //r g b
+int dp[sz][3];
 
-int n,answer;
-int price[1001][3];
-int dp[1001][3];
+void input() {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> color[i][0] >> color[i][1] >> color[i][2];
+	}
+}
+
+void solution() {
+	dp[0][0] = color[0][0];
+	dp[0][1] = color[0][1];
+	dp[0][2] = color[0][2];
+
+	for (int i = 1; i < n; i++) {
+		dp[i][0] = min(dp[i - 1][1], dp[i - 1][2]);
+		dp[i][1] = min(dp[i - 1][0], dp[i - 1][2]);
+		dp[i][2] = min(dp[i - 1][1], dp[i - 1][0]);
+		dp[i][0] += color[i][0];
+		dp[i][1] += color[i][1];
+		dp[i][2] += color[i][2];
+	}
+
+	int answer = dp[n - 1][0];
+	answer = min(answer, dp[n - 1][1]);
+	answer = min(answer, dp[n - 1][2]);
+
+	cout << answer;
+}
+
+void solve() {
+	input();
+	solution();
+}
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    cin>>n;
-    for(int i=1; i<=n; i++) cin>>price[i][R]>>price[i][G]>>price[i][B];
-    dp[1][R]=price[1][R];
-    dp[1][G]=price[1][G];
-    dp[1][B]=price[1][B];
-    for(int i=2; i<=n; i++) {
-        dp[i][R] = min(dp[i-1][G],dp[i-1][B])+price[i][R];
-        dp[i][G] = min(dp[i-1][R],dp[i-1][B])+price[i][G];
-        dp[i][B] = min(dp[i-1][R],dp[i-1][G])+price[i][B];
-    }
-    answer = min(dp[n][R],dp[n][G]);
-    answer = min(answer,dp[n][B]);
-    cout<<answer;
+	solve();
 }

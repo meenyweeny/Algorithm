@@ -1,54 +1,50 @@
 #include<iostream>
-#include<vector>
 #include<queue>
 using namespace std;
 
-const int inf = 2e9;
-
 struct edge {
-    int vertex;
-    int weight;
+    int dest,weight;
 
     bool operator<(const edge & b) const {
-        return weight < b.weight;
+        return weight > b.weight;
     }
 };
 
+const int inf = 2e9;
+const int sz = 1e3 + 1;
 int n,m,s,d;
-vector<edge> graph[1001];
-priority_queue<edge> pq;
-int dist[1001];
+vector<edge> graph[sz];
+int dist[sz];
 
 void input() {
-    cin>>n>>m;
-    int v,u,w;
-    for(int i=0; i<m; i++) {
-        cin>>v>>u>>w;
-        graph[v].push_back({u,w});
+    cin>>n;
+    cin>>m;
+    int a,b,c;
+    while(m--) {
+        cin>>a>>b>>c;
+        graph[a].push_back({b,c});
     }
     cin>>s>>d;
 }
 
 void solution() {
-    fill(dist,dist+1001,inf);
-    dist[s]=0;
+    fill(dist,dist+sz,inf);
+    priority_queue<edge> pq;
     pq.push({s,0});
+    dist[s] = 0;
 
     while(!pq.empty()) {
-        edge top = pq.top();
+        edge now = pq.top();
         pq.pop();
 
-        if(top.weight>dist[top.vertex]) {
+        if(dist[now.dest] < now.weight) {
             continue;
         }
 
-        int length = graph[top.vertex].size();
-        for(int i=0; i<length; i++) {
-            edge next = graph[top.vertex][i];
-
-            if(dist[next.vertex] > top.weight+next.weight) {
-                dist[next.vertex] = top.weight+next.weight;
-                pq.push({next.vertex,dist[next.vertex]});
+        for(auto g:graph[now.dest]) {
+            if(g.weight+now.weight < dist[g.dest]) {
+                dist[g.dest] = g.weight + now.weight;
+                pq.push({g.dest, dist[g.dest]});
             }
         }
     }

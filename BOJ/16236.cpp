@@ -1,90 +1,87 @@
 #include<iostream>
 #include<queue>
-#include<cstring>
 using namespace std;
 
 int n;
-int map[21][21];
-bool visited[21][21];
-int shark_eat;
-pair<int,int> shark_position;
-int answer,shark_size;
-int dx[4] = {0,1,0,-1};
-int dy[4] = {1,0,-1,0};
+int map[20][20];
+bool visited[20][20];
+pair<int,int> shark;
+int shark_size = 2;
+int shark_eat = 0;
+int hour;
 vector<pair<int,pair<int,int>>> fish;
 
 void input() {
     cin>>n;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=n; j++) {
+    for(int i=0; i<n; i++) {
+        for(int j=0; j<n; j++) {
             cin>>map[i][j];
             if(map[i][j]==9) {
-                shark_position.first = i;
-                shark_position.second = j;
+                shark = {i,j};
             }
         }
     }
 }
 
-bool is_in_range(int x,int y) {
-    return x>0 && y>0 && x<=n && y<=n;
+bool checkRange(int x,int y) {
+    return x>=0 && y>=0 && x<n && y<n;
 }
 
 void bfs() {
-    fish.clear();
+    fill(&visited[0][0],&visited[19][20],false);
     queue<pair<pair<int,int>,int>> q;
-    q.push({{shark_position.first,shark_position.second},0});
-    memset(visited,false,sizeof(visited));
-    visited[shark_position.first][shark_position.second] = true;
+    q.push({shark,0});
+    visited[shark.first][shark.second] = true;
+    map[shark.first][shark.second] = 0;
+    fish.clear();
 
     while(!q.empty()) {
         int fx = q.front().first.first;
         int fy = q.front().first.second;
-        int cnt = q.front().second;
+        int count = q.front().second;
         q.pop();
 
         for(int i=0; i<4; i++) {
-            int nx = fx+dx[i];
-            int ny = fy+dy[i];
-            if(!is_in_range(nx,ny)) {
-                continue;
-            }
-            if(map[nx][ny]>shark_size) {
+            int nx = fx + "2011"[i] - '1';
+            int ny = fy + "1120"[i] - '1';
+
+            if(!checkRange(nx,ny)) {
                 continue;
             }
             if(visited[nx][ny]) {
                 continue;
             }
+            if(map[nx][ny]>shark_size) {
+                continue;
+            }
             visited[nx][ny] = true;
-            q.push({{nx,ny},cnt+1});
+            q.push({{nx,ny},count+1});
             if(map[nx][ny]<shark_size && map[nx][ny]!=0) {
-                fish.push_back({cnt+1,{nx,ny}});
+                fish.push_back({count + 1,{nx, ny}});
             }
         }
     }
 }
 
 void solution() {
-    shark_size = 2;
     while(1) {
         bfs();
         if(fish.empty()) {
             break;
         }
-        sort(fish.begin(), fish.end());
-        map[fish.front().second.first][fish.front().second.second] = 0;
+        sort(fish.begin(),fish.end());
+        pair<int,int> next_pos = fish.front().second;
+        int time = fish.front().first;
+        map[next_pos.first][next_pos.second] = 0;
+        hour += time;
+        shark = next_pos;
         ++shark_eat;
-        answer += fish.front().first;
-        map[shark_position.first][shark_position.second] = 0;
-        shark_position.first = fish.front().second.first;
-        shark_position.second = fish.front().second.second;
-        map[shark_position.first][shark_position.second] = 9;
-        if(shark_eat==shark_size) {
+        if(shark_eat == shark_size) {
             ++shark_size;
             shark_eat = 0;
         }
     }
-    cout<<answer;
+    cout<<hour;
 }
 
 void solve() {

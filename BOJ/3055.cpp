@@ -1,24 +1,27 @@
 #include<iostream>
-#include<deque>
+#include<vector>
+#include<queue>
 using namespace std;
 
-const char water = '*';
+const string kaktus = "KAKTUS";
 const char stone = 'X';
-const char beaver = 'D';
-const char dochi = 'S';
+const char water = '*';
+const char emp = '.';
+const char endpoint = 'D';
 int r,c;
-char map[51][51];
-bool visited[51][51];
-pair<int,int> now;
-deque<pair<int,int>> waters;
+char map[50][50];
+bool visited[50][50];
+pair<int,int> start;
+vector<pair<int,int>> waters;
 
 void input() {
     cin>>r>>c;
-    for(int i=1; i<=r; i++) {
-        for(int j=1; j<=c; j++) {
+    for(int i=0; i<r; i++) {
+        for(int j=0; j<c; j++) {
             cin>>map[i][j];
-            if(map[i][j]==dochi) {
-                now = {i,j};
+            if(map[i][j]=='S') {
+                map[i][j]=emp;
+                start = {i,j};
             } else if(map[i][j]==water) {
                 waters.push_back({i,j});
             }
@@ -26,82 +29,70 @@ void input() {
     }
 }
 
-bool is_in_range(int x,int y) {
-    return x>0 && y>0 && x<=r && y<=c;
+bool check_range(int x,int y) {
+    return x>=0 && x<r && y>=0 && y<c;
 }
 
 void spread_water() {
-    deque<pair<int,int>> tmp;
-    for(auto w:waters) {
+    int length = waters.size();
+    for(int i=0; i<length; i++) {
+        pair<int,int > w = waters[i];
         for(int i=0; i<4; i++) {
             int nx = w.first + "2011"[i] - '1';
             int ny = w.second + "1120"[i] - '1';
-            if(!is_in_range(nx,ny)) {
+            if(!check_range(nx,ny)) {
                 continue;
             }
-            if(map[nx][ny]==beaver || map[nx][ny]==stone || map[nx][ny]==water) {
+            if(map[nx][ny]==water || map[nx][ny]==stone || map[nx][ny]==endpoint) {
                 continue;
             }
             map[nx][ny] = water;
-            tmp.push_back({nx,ny});
+            waters.push_back({nx,ny});
         }
     }
-    waters = tmp;
-//    for(auto w:waters) {
-//        cout<<w.first<<", "<<w.second<<endl;
-//    }
-//    cout<<"--------------------\n\n";
 }
 
-void process() {
-    deque<pair<int,pair<int,int>>> q;
-    q.push_back({0,{now.first, now.second}});
+string solution() {
+    queue<pair<pair<int,int>,int>> q;
+    q.push({start,0});
+    visited[start.first][start.second] = true;
     int before = -1;
-    visited[now.first][now.second] = true;
-
     while(!q.empty()) {
-        int count = q.front().first;
-        int fx = q.front().second.first;
-        int fy = q.front().second.second;
-        q.pop_front();
-
-        if(map[fx][fy]==beaver) {
-            cout<<count;
-            return;
+        int fx = q.front().first.first;
+        int fy = q.front().first.second;
+        int count = q.front().second;
+        q.pop();
+        if(map[fx][fy]==endpoint) {
+            return to_string(count);
         }
-
-        if(count!=before) {
+        if(before!=count) {
             spread_water();
             before = count;
         }
-
+        ++count;
         for(int i=0; i<4; i++) {
             int nx = fx + "2011"[i] - '1';
             int ny = fy + "1120"[i] - '1';
 
-            if(!is_in_range(nx,ny)) {
+            if(!check_range(nx,ny)) {
                 continue;
             }
-
-            if(map[nx][ny]==stone || map[nx][ny]==water) {
-                continue;
-            }
-
             if(visited[nx][ny]) {
                 continue;
             }
-
+            if(map[nx][ny]==water || map[nx][ny]==stone) {
+                continue;
+            }
             visited[nx][ny] = true;
-            q.push_back({count+1, {nx,ny}});
+            q.push({{nx,ny},count});
         }
     }
-
-    cout<<"KAKTUS";
+    return kaktus;
 }
 
 void solve() {
     input();
-    process();
+    cout<<solution();
 }
 
 int main() {

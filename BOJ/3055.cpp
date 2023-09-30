@@ -37,9 +37,9 @@ void spread_water() {
     int length = waters.size();
     for(int i=0; i<length; i++) {
         pair<int,int > w = waters[i];
-        for(int i=0; i<4; i++) {
-            int nx = w.first + "2011"[i] - '1';
-            int ny = w.second + "1120"[i] - '1';
+        for(int j=0; j < 4; j++) {
+            int nx = w.first + "2011"[j] - '1';
+            int ny = w.second + "1120"[j] - '1';
             if(!check_range(nx,ny)) {
                 continue;
             }

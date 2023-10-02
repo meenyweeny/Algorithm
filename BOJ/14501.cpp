@@ -1,38 +1,31 @@
 #include<iostream>
 using namespace std;
 
-int n;
-int t[16];
-int p[16];
-int answer = -1;
+int n, answer;
+int t[15],p[15];
 
 void input() {
     cin>>n;
-    for(int i=1; i<=n; i++) {
+    for(int i=0; i<n; i++) {
         cin>>t[i]>>p[i];
     }
 }
 
-void run(int day,int price) {
-    if(day-1>n) {
+void process(int day, int earn) {
+    if(day<=n) {
+        answer = max(answer,earn);
+    }
+    if(day>=n) {
         return;
     }
-    answer = max(answer, price);
-    for(int i=day; i<=n; i++) {
-        run(i+t[i],price+p[i]);
-    }
-}
-
-void solution() {
-    for(int i=1; i<=n; i++) {
-        run(i,0);
-    }
-    cout<<answer;
+    process(day+t[day],earn+p[day]);
+    process(day+1,earn);
 }
 
 void solve() {
     input();
-    solution();
+    process(0,0);
+    cout<<answer;
 }
 
 int main() {

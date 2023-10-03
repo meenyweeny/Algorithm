@@ -2,55 +2,51 @@
 #include<vector>
 using namespace std;
 
-int n,answer;
-int arr[21][21];
+int n;
+int map[20][20];
+bool visited[20];
+int answer = 2e9;
 
 void input() {
     cin>>n;
-    for(int i=1; i<=n; i++) {
-        for(int j=1; j<=n; j++) {
-            cin>>arr[i][j];
+    for(int i=0; i<n; i++) {
+        for(int j=0; j<n; j++) {
+            cin>>map[i][j];
         }
     }
 }
 
-void run(vector<int> start,int front) {
-    if(start.size()==(n/2)) {
-        int s,l;
-        s=l=0;
-        int visited[21];
-        fill(visited,visited+21,false);
-        for(int i=0; i<start.size(); i++) {
-            visited[start[i]] = true;
-            for(int j=0; j<start.size(); j++) {
-                s+=arr[start[i]][start[j]];
-            }
+pair<int,int> get_score() {
+    int a,b;
+    a = b = 0;
+    vector<int> x,y;
+    for(int i=0; i<n; i++) {
+        visited[i] ? x.push_back(i) : y.push_back(i);
+    }
+    for(int i=0; i<n/2; i++) {
+        for(int j=0; j<n/2; j++) {
+            a += map[x[i]][x[j]];
+            b += map[y[i]][y[j]];
         }
-        for(int i=1; i<=n; i++) {
-            if(visited[i]) {
-                continue;
-            }
-            for(int j=1; j<=n; j++) {
-                if(visited[j]) {
-                    continue;
-                }
-                l+=arr[i][j];
-            }
-        }
-        answer = min(answer,abs(s-l));
+    }
+    return {a,b};
+}
+
+void make_team(int count,int index) {
+    if(count==n/2) {
+        pair<int,int> score = get_score();
+        answer = min(answer,abs(score.first-score.second));
         return;
     }
-
-    for(int i=front; i<=n; i++) {
-        start.push_back(i);
-        run(start,i+1);
-        start.pop_back();
+    for(int i=index; i<n; i++) {
+        visited[i] = true;
+        make_team(count+1,i+1);
+        visited[i] = false;
     }
 }
 
 void solution() {
-    answer = 2e9;
-    run({},1);
+    make_team(0,0);
     cout<<answer;
 }
 

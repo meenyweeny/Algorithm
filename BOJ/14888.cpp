@@ -1,53 +1,73 @@
 #include<iostream>
+#include<algorithm>
 using namespace std;
 
-int n, ansmin, ansmax;
+int n, maxanswer = -2e9, minanswer = 2e9;
 int arr[11];
 int oper[4];
 
-void input() {
-    cin>>n;
-    for(int i=0; i<n; i++) {
-        cin>>arr[i];
-    }
-    for(int i=0; i<4; i++) {
-        cin>>oper[i];
-    }
+int mul(int a, int b) {
+	return a * b;
 }
 
-void solution(int sum, int start) {
-    if(start==n) {
-        ansmax = max(ansmax,sum);
-        ansmin = min(ansmin,sum);
-        return;
-    }
-    for(int i=0; i<4; i++) {
-        if(!oper[i]) {
-            continue;
-        }
-        --oper[i];
-        int tmp = sum;
-        if(i==0) tmp += arr[start];
-        else if(i==1) tmp -= arr[start];
-        else if(i==2) tmp *= arr[start];
-        else tmp /= arr[start];
-        solution(tmp,start+1);
-        ++oper[i];
-    }
+int sub(int a, int b) {
+	return a - b;
+}
+
+int add(int a, int b) {
+	return a + b;
+}
+
+int divi(int a, int b) {
+	return a / b;
+}
+
+void input() {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	for (int i = 0; i < 4; i++) {
+		cin >> oper[i];
+	}
+}
+
+void solution(int* op, int sum, int index) {
+	if (index == n) {
+		maxanswer = max(maxanswer, sum);
+		minanswer = min(minanswer, sum);
+		return;
+	}
+	int num = arr[index];
+	++index;
+	for (int i = 0; i < 4; i++) {
+		if (!op[i]) {
+			continue;
+		}
+		--op[i];
+		if (i == 0) {
+			solution(op, add(sum, num), index);
+		} else if (i == 1) {
+			solution(op, sub(sum, num), index);
+		} else if (i == 2) {
+			solution(op, mul(sum, num), index);
+		} else {
+			solution(op, divi(sum, num), index);
+		}
+		++op[i];
+	}
 }
 
 void solve() {
-    input();
-    ansmin = 2e9;
-    ansmax = -2e9;
-    solution(arr[0],1);
-    cout<<ansmax<<'\n'<<ansmin;
+	input();
+	solution(oper, arr[0],  1);
+	cout << maxanswer << '\n' << minanswer;
 }
 
 int main() {
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    solve();
+	solve();
 }

@@ -2,32 +2,23 @@
 using namespace std;
 
 int n,m;
-int check, idx, full;
-string answer;
 
-void init() {
-    check = idx = 0;
-    full = 0;
-}
-
-void solution() {
-    full = (1<<n) - 1;
-    while(m>0) {
-        check |= (m%2)<<(idx++);
-        m/=2;
+bool judge() {
+    for(int i=0; i<n; i++) {
+        int flag = m & (1<<i);
+        if(!flag) {
+            return flag;
+        }
     }
-    check &= full;
-    answer = (check == full) ? "ON" : "OFF";
+    return true;
 }
 
 void solve() {
     int t;
     cin>>t;
     for(int tc=1; tc<=t; tc++) {
-        init();
         cin>>n>>m;
-        solution();
-        cout<<'#'<<tc<<' '<<answer<<'\n';
+        cout<<'#'<<tc<<' '<<(judge() ? "ON" : "OFF")<<'\n';
     }
 }
 
@@ -37,4 +28,5 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     solve();
+    return 0;
 }
